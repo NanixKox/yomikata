@@ -1,0 +1,84 @@
+.yomikata-sub-expl {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: min(320px, calc(100vw - 24px));
+  border-radius: 6px;
+  background: rgba(18, 20, 24, 0.96);
+  color: #f7f7f7;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.42);
+  font-family: Arial, Helvetica, sans-serif;
+  z-index: 1000000;
+  overflow: hidden;
+}
+
+.yomikata-sub-expl-hidden {
+  display: none;
+}
+
+.yomikata-sub-expl-up {
+  transform: translateY(-10vh);
+}
+
+.yomikata-sub-expl-tabs {
+  display: flex;
+  align-items: stretch;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.yomikata-sub-expl-tab {
+  flex: 1;
+  border: 0;
+  padding: 0 12px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  font: inherit;
+  font-size: 13px;
+  line-height: 34px;
+  cursor: pointer;
+}
+
+.yomikata-sub-expl-tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.yomikata-sub-expl-tab-active {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.yomikata-sub-expl-body {
+  padding: 12px 14px 14px;
+}
+
+.yomikata-sub-expl-panel-hidden {
+  display: none;
+}
+
+.yomikata-sub-expl-title {
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.yomikata-sub-expl-content {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.yomikata-sub-word {
+  display: inline-block;
+  border-radius: 4px;
+  padding: 0 2px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.yomikata-sub-word:hover {
+  background: rgba(33, 196, 77, 0.22);
+}

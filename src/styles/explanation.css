@@ -1,0 +1,120 @@
+.yomikata-explanation{
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%);
+
+    position: absolute;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 21vw;
+    height: 45vh;
+    background-color: #080d0a;
+
+    border-radius: 3%;
+}
+.yomikata-explanation.yomikata-hidden{
+    display: none;
+}
+.yomikata-explanation hr{
+    border: none;
+    border-top: 1px solid rgb(33, 196, 77);
+
+    width: 90%;
+}
+
+.yomikata-explanation-top-bar{
+    width: 100%;
+
+    margin-top: 1vh;
+
+    display: flex;
+}
+.yomikata-explanation-top-bar span{
+    flex: 1;
+
+    text-align: center;
+}
+
+.yomikata-explanation-tag{
+    color: aliceblue;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(10px,1vw,16px);
+}
+.yomikata-explanation-tag.active{
+    color: rgb(33, 196, 77);
+}
+
+.yomikata-explanation-container{
+    width: 100%;
+
+    padding: 0 1vw;
+    box-sizing: border-box;
+
+    color: aliceblue;
+    font-family: Arial, Helvetica, sans-serif;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    text-align: left;
+    font-size: clamp(10px,1.5vw,20px);
+}
+.yomikata-explanation-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.yomikata-explanation-container::-webkit-scrollbar-track {
+    background: #080d0a;
+}
+.yomikata-explanation-container::-webkit-scrollbar-thumb {
+    background: rgb(33, 196, 77);
+    border-radius: 4px;
+}
+.yomikata-explanation-container::-webkit-scrollbar-thumb {
+    background: darkgray;
+    border-radius: 4px;
+}
+.yomikata-explanation h2{
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.yomikata-explanation-container ul{
+    margin-top: 0;
+
+    padding-left: 1.5vw;
+}
+.yomikata-explanation-container li::marker{
+    color: darkgray;
+}
+
+.yomikata-explanation-container.hidden{
+    display: none;
+}
+
+.yomikata-explanation-kanji-element-text{
+    font-size: clamp(10px,1vw,16px);
+    font-weight: 150;
+}
+
+.yomikata-explanation-container {
+    position: relative;
+}
+.yomikata-explanation-container {
+    flex: 1;
+    min-height: 0;
+}
+.yomikata-sub-expl-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 85%;
+    color: #9a9a9a;
+    font: 500 clamp(10px, 1.2vw, 16px)/1.45 Arial, Helvetica, sans-serif;
+    text-align: center;
+    overflow-wrap: anywhere;
+}

@@ -1,0 +1,96 @@
+{
+  "manifest_version": 3,
+  "name": "Yomikata",
+  "version": "0.1.0",
+  "description": "Japanese reading helper for Netflix&Crunchyroll subtitles.",
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "src/scripts/background.js"
+  },
+  "host_permissions": [
+    "https://www.netflix.com/*",
+    "https://jimaku.cc/*",
+    "https://jisho.org/*",
+    "https://kanjiapi.dev/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/icons/nihon.png",
+        "src/scripts/node_modules/sudachi-wasm333/sudachi.js",
+        "src/scripts/node_modules/sudachi-wasm333/resources/system.dic"
+      ],
+      "matches": ["https://www.netflix.com/*"]
+    },
+    {
+      "resources": [
+        "src/icons/nihon.png",
+        "src/scripts/node_modules/sudachi-wasm333/sudachi.js",
+        "src/scripts/node_modules/sudachi-wasm333/resources/system.dic"
+      ],
+      "matches": ["https://www.crunchyroll.com/*"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.netflix.com/watch/*"],
+      "css": [
+        "src/styles/clickable.css",
+        "src/styles/overlay.css",
+        "src/styles/sidebar.css",
+        "src/styles/subtitles.css",
+        "src/styles/explanation.css",
+        "src/styles/netflixMock.css"
+      ],
+      "js": [
+        "src/scripts/config.js",
+        "src/scripts/words/fetch_word.js",
+        "src/scripts/words/get_word.js",
+        "src/scripts/zkanji/fetch_kanji.js",
+        "src/scripts/sentence/yomikataTokenizer.js",
+        "src/scripts/sentence/yomikataSentence.js",
+        "src/scripts/subs/fetch_subfile.js",
+        "src/scripts/subs/subList.js",
+        "src/scripts/html_objects/yomikataIconButton.js",
+        "src/scripts/html_objects/yomikataSidebar.js",
+        "src/scripts/html_objects/yomikataSubsElement.js",
+        "src/scripts/html_objects/yomikataSubExplenationElement.js",
+        "src/scripts/html_objects/yomikataWordElement.js",
+        "src/scripts/menagers/subtitlesMenager.js",
+        "src/scripts/menagers/netflix/netflixMenager.js",
+        "src/scripts/main.js"
+      ],
+      "run_at":"document_idle"
+    },
+    {
+      "matches": ["https://www.crunchyroll.com/watch/*"],
+      "css": [
+        "src/styles/clickable.css",
+        "src/styles/overlay.css",
+        "src/styles/sidebar.css",
+        "src/styles/subtitles.css",
+        "src/styles/explanation.css",
+        "src/styles/crunchyrollMock.css"
+      ],
+      "js": [
+        "src/scripts/config.js",
+        "src/scripts/words/fetch_word.js",
+        "src/scripts/words/get_word.js",
+        "src/scripts/zkanji/fetch_kanji.js",
+        "src/scripts/sentence/yomikataTokenizer.js",
+        "src/scripts/sentence/yomikataSentence.js",
+        "src/scripts/subs/fetch_subfile.js",
+        "src/scripts/subs/subList.js",
+        "src/scripts/html_objects/yomikataIconButton.js",
+        "src/scripts/html_objects/yomikataSidebar.js",
+        "src/scripts/html_objects/yomikataSubsElement.js",
+        "src/scripts/html_objects/yomikataSubExplenationElement.js",
+        "src/scripts/html_objects/yomikataWordElement.js",
+        "src/scripts/menagers/subtitlesMenager.js",
+        "src/scripts/menagers/crunchyroll/crunchyrollMenager.js",
+        "src/scripts/main.js"
+      ],
+      "run_at":"document_idle"
+    }
+  ]
+}
