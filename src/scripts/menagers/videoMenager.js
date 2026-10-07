@@ -1,8 +1,12 @@
-const videoWatchClasses = {
+const videoWatchSelectors= {
     videoStater:"",
     videoContainer:"",
-    videoElement:""
+    videoElement:"video",
+    videoActive:"",
+    videoInactive:"",
+    videoPassive:"",
 }
+
 class VideoWatch{
     #appendController(){
         this.WATCH_VIDEO_CONTAINER.appendChild(this.yomikataIcBtn.yic);
@@ -29,7 +33,7 @@ class VideoWatch{
     }
     #setupControllerStateHook(){
         this.elementWaiter = new MutationObserver(()=>{
-        const VIDEO_STATER = document.querySelector(this.specificClasses.videoStater);
+        const VIDEO_STATER = document.querySelector(this.specificSelectors.videoStater);
 
         if(VIDEO_STATER){
             this.VIDEO_STATES_ELEMENT = VIDEO_STATER;
@@ -39,15 +43,16 @@ class VideoWatch{
                 for(const mut of mutations){
                     if(mut.type != "attributes") continue;
                     if(mut.attributeName != "class") continue;
-                }
+                
 
-                const classList = mut.target.classList;
-                if(classList.contains("active")){
-                    this.#videoControlersActiveAction();
-                }else if(classList.contains("inactive")){
-                    this.#videoControlersInactiveAction();
-                }else if(classList.contains("passive")){
-                    this.#videoControlersPassiveAction();
+                    const classList = mut.target.classList;
+                    if(classList.contains(this.specificSelectors.videoActive)){
+                        this.#videoControlersActiveAction();
+                    }else if(classList.contains(this.specificSelectors.videoInactive)){
+                        this.#videoControlersInactiveAction();
+                    }else if(classList.contains(this.specificSelectors.videoPassive)){
+                        this.#videoControlersPassiveAction();
+                    }
                 }
             });
 
@@ -69,8 +74,8 @@ class VideoWatch{
     #appendSubtitles(){
         this.WATCH_VIDEO_CONTAINER.appendChild(this.yomikataSubtitles.itself());
     }
-    constructor(yomikataIconButton,yomikataSidebar,yomikataSubtitles,videoWatchContainer,videoElement,specificClasses){
-        this.specificClasses = specificClasses;
+    constructor(yomikataIconButton,yomikataSidebar,yomikataSubtitles,videoWatchContainer,videoElement,specificSelectors){
+        this.specificSelectors = specificSelectors;
 
         this.elementWaiter = null;
         this.videoElementObservator = null;
@@ -83,7 +88,11 @@ class VideoWatch{
         this.WATCH_VIDEO_CONTAINER = videoWatchContainer;
         this.VIDEO_ELEMENT = videoElement;
 
+        this.#appendController();
+        this.#appendSidebar();
+        this.#appendSubtitles();
 
+        this.#setupControllerStateHook();
 
         this.isReadingExplanation = false;
     }
@@ -104,8 +113,8 @@ class VideoWatch{
     }
 }
 class VideoMenager{
-    constructor(specificClasses){
-        this.specificClasses = specificClasses;
+    constructor(specificSelectors){
+        this.specificSelectors = specificSelectors;
 
         this.CONFIG = new Config();
 
@@ -129,9 +138,9 @@ class VideoMenager{
         this.video = null;
     }
     async waitForElements(){
-        this.WATCH_VIDEO_CONTAINER = await waitForElement(this.specificClasses.videoContainer);
-        this.VIDEO_ELEMENT = await waitForElement(this.specificClasses.videoElement);
-        this.yomikataSubList = await waitForSubList(
+        this.WATCH_VIDEO_CONTAINER = await waitForElement(this.specificSelectors.videoContainer);
+        this.VIDEO_ELEMENT = await waitForElement(this.specificSelectors.videoElement);
+        this.yomikataSubList = await this.waitForSubList(
             this.yomikataSidebar,
             this.VIDEO_ELEMENT,
             this.CONFIG.jimakuApiKey);
@@ -142,7 +151,7 @@ class VideoMenager{
             this.yomikataSubtitles,
             this.WATCH_VIDEO_CONTAINER,
             this.VIDEO_ELEMENT,
-            this.specificClasses);
+            this.specificSelectors);
 
         this.yomikataSubMenger = new SubtitlesMenager(
             this.yomikataSubList,
@@ -150,9 +159,59 @@ class VideoMenager{
             this.VIDEO_ELEMENT,
             ()=>{this.vWatch.isReadingExplanation = true},
             ()=>{this.vWatch.isReadingExplanation = false});
+
+        if(this.yomikataSubMenger){
+            this.yomikataSidebar.leftShiftButtonOnClick(()=>{
+                if(this.yomikataSubMenger.offsetMinus100ms()){
+                    this.yomikataSidebar.refreshOffsetVal(false);
+                }
+                }
+            )
+            this.yomikataSidebar.rightShiftButtonOnClick(()=>{
+                if(this.yomikataSubMenger.offsetPlus100ms()){
+                    this.yomikataSidebar.refreshOffsetVal(true);
+                }
+                }
+            )
+        }
     }
     async build(){
+        await this.waitForElements();
+        await this.yomikataSubMenger.init();
+    }
+    async getTitle(){
+        throw new Error("getTitle() in class VideoMenager was not overriden");
+    }
+    async getEpisode(){
+        throw new Error("getEpisode() in class VideoMenager was not overriden");
+    }
+    async waitForSubList(yomikataSidebar,videoElement,apiKey){
+        const animeTitleH = await this.getTitle();
+        const animeEp = await this.getEpisode();
 
+        const sub_res = await fetchDownloadJimakuSubs(animeTitleH,animeEp,"netflix",apiKey);
+        if(sub_res.ok){
+            function sideBarAppendTextBlock(subObj){
+                const textBlock = document.createElement("button");
+                textBlock.classList.add("yomikata-sidebar-item");
+                textBlock.textContent = subObj.content;
+
+                textBlock.addEventListener("click",()=>{
+                    //console.log(subObj.timeStart, typeof subObj.timeStart);
+                    //videoElement.fastSeek(subObj.timeStart);
+                    //videoElement.currentTime = subObj.timeStart;
+                    //videoElement.pause();
+                });
+
+                yomikataSidebar.appendChild(textBlock);
+            }
+            return new SubList(sub_res,sideBarAppendTextBlock);
+        }else{
+            const msg = document.createElement("a");
+            msg.classList.add("yomikata-sidebar-message");
+            msg.textContent = "Sorry it appears that there are no Subtitles for this episode!";
+            yomikataSidebar.appendChild(msg);
+        }
     }
 }
 
@@ -188,4 +247,8 @@ function waitForElement(querySelectorStr,maxWaitTime = 0){
                 },maxWaitTime);
             }
         });
+}
+
+function isCharSeparator(char){
+    return /[\s.\/?'\\|]/.test(char);
 }

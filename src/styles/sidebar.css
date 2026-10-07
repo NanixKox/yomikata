@@ -134,3 +134,31 @@
   text-decoration: none;
   overflow-wrap: anywhere;
 }
+
+.yomikata-sidebar-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+}
+
+.yomikata-sidebar-shift-button {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(33, 196, 77, 0.55);
+  border-radius: 6px;
+  background: rgba(33, 196, 77, 0.08);
+  color: #21c44d;
+
+  font: 700 22px/1 Arial, Helvetica, sans-serif;
+  cursor: pointer;
+}
+
+.yomikata-sidebar-shift-value {
+  color: #d6d6d6;
+  font: 500 14px/1 Arial, Helvetica, sans-serif;
+}

@@ -2,6 +2,8 @@ class SubtitlesMenager{
     constructor(subList,yomikataSubtitles,videoElement,startExplainCallback,endExplainCallback){
         this.yomikataTokenizer = new YomikataTokenizer();
 
+        this.offset = 0;
+
         this.subList = subList;
 
         this.lastSubLine = null;
@@ -52,8 +54,25 @@ class SubtitlesMenager{
             this.endExplainCallback();
         }
     }
+    offsetPlus100ms(){
+        this.offset += 0.1;
+        
+        return true;
+    }
+    offsetMinus100ms(){
+        this.offset -= 0.1;
+
+        return true;
+    }
     refreshSubs(){
-        const currSubLine = this.subList.getSubLine(this.VIDEO_ELEMENT.currentTime);
+        
+        const currSubLine = this.subList.getSubLine(
+            min_pref_max(
+                0,
+                this.VIDEO_ELEMENT.currentTime 
+                + this.offset,
+                this.subList.getLastSubSecond()
+            ));
         if(currSubLine){
             this.lastSubLine = currSubLine;
             const tokenized = this.yomikataTokenizer.tokenize(this.lastSubLine.content);
@@ -76,6 +95,12 @@ class SubtitlesMenager{
         }
     }
     async init(){
+        if (!this.subList || !Array.isArray(this.subList.subTab) || this.subList.subTab.length === 0) {
+            this.YOMIKATA_SUB_ELEMENT.setSubtitles("");
+            console.warn("Subtitle manager initialized without parsed subtitle cues.");
+            return;
+        }
+
         await this.yomikataTokenizer.initSudachi();
 
         this.lastSubLine = this.subList.getSubLine(this.VIDEO_ELEMENT.currentTime)?this.subList.getSubLine(this.VIDEO_ELEMENT.currentTime):this.subList.subTab[0];
@@ -93,4 +118,14 @@ class SubtitlesMenager{
             this.VIDEO_ELEMENT.removeEventListener("timeupdate",this.onTimeUpdate);
         }catch{}
     }
+}
+
+function min_pref_max(min,pref,max){
+    if(min != null & pref < min)
+        return min;
+
+    if(max != null & pref > max)
+        return max;
+
+    return pref;
 }

@@ -57,6 +57,7 @@
         "src/scripts/html_objects/yomikataSubExplenationElement.js",
         "src/scripts/html_objects/yomikataWordElement.js",
         "src/scripts/menagers/subtitlesMenager.js",
+        "src/scripts/menagers/videoMenager.js",
         "src/scripts/menagers/netflix/netflixMenager.js",
         "src/scripts/main.js"
       ],
@@ -87,6 +88,7 @@
         "src/scripts/html_objects/yomikataSubExplenationElement.js",
         "src/scripts/html_objects/yomikataWordElement.js",
         "src/scripts/menagers/subtitlesMenager.js",
+        "src/scripts/menagers/videoMenager.js",
         "src/scripts/menagers/crunchyroll/crunchyrollMenager.js",
         "src/scripts/main.js"
       ],
