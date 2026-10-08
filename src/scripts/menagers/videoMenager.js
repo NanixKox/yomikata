@@ -8,7 +8,7 @@ const videoWatchSelectors= {
 }
 
 class VideoWatch{
-    #appendController(){
+    appendController(){
         this.WATCH_VIDEO_CONTAINER.appendChild(this.yomikataIcBtn.yic);
     }
     #videoControlersActiveAction(){
@@ -68,10 +68,10 @@ class VideoWatch{
         subtree: true
         });
     }
-    #appendSidebar(){
+    appendSidebar(){
         this.WATCH_VIDEO_CONTAINER.appendChild(this.yomikataSiBar.ys);
     }
-    #appendSubtitles(){
+    appendSubtitles(){
         this.WATCH_VIDEO_CONTAINER.appendChild(this.yomikataSubtitles.itself());
     }
     constructor(yomikataIconButton,yomikataSidebar,yomikataSubtitles,videoWatchContainer,videoElement,specificSelectors){
@@ -88,9 +88,9 @@ class VideoWatch{
         this.WATCH_VIDEO_CONTAINER = videoWatchContainer;
         this.VIDEO_ELEMENT = videoElement;
 
-        this.#appendController();
-        this.#appendSidebar();
-        this.#appendSubtitles();
+        this.appendController();
+        this.appendSidebar();
+        this.appendSubtitles();
 
         this.#setupControllerStateHook();
 
@@ -113,6 +113,9 @@ class VideoWatch{
     }
 }
 class VideoMenager{
+    additionalYomikataIconAction(){
+    }
+    async additionalWaitForElements(){}
     constructor(specificSelectors){
         this.specificSelectors = specificSelectors;
 
@@ -130,12 +133,22 @@ class VideoMenager{
 
         this.yomikataIconButton.onClick(()=>{
             this.yomikataSidebar.toggle();
+            additionalYomikataIconAction();
         });
         this.yomikataSidebar.onToggle((isVisible)=>{
 
         });
 
         this.video = null;
+    }
+    createVideoWatch(){
+        this.vWatch = new VideoWatch(
+            this.yomikataIconButton,
+            this.yomikataSidebar,
+            this.yomikataSubtitles,
+            this.WATCH_VIDEO_CONTAINER,
+            this.VIDEO_ELEMENT,
+            this.specificSelectors);
     }
     async waitForElements(){
         this.WATCH_VIDEO_CONTAINER = await waitForElement(this.specificSelectors.videoContainer);
@@ -145,13 +158,7 @@ class VideoMenager{
             this.VIDEO_ELEMENT,
             this.CONFIG.jimakuApiKey);
         
-        this.vWatch = new VideoWatch(
-            this.yomikataIconButton,
-            this.yomikataSidebar,
-            this.yomikataSubtitles,
-            this.WATCH_VIDEO_CONTAINER,
-            this.VIDEO_ELEMENT,
-            this.specificSelectors);
+        this.createVideoWatch();
 
         this.yomikataSubMenger = new SubtitlesMenager(
             this.yomikataSubList,
@@ -174,6 +181,8 @@ class VideoMenager{
                 }
             )
         }
+
+        await this.additionalWaitForElements();
     }
     async build(){
         await this.waitForElements();

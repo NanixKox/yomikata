@@ -1,1 +1,0 @@
-player-timedtext-text-container : dla napisow - przechowuje wewnatrz siebie 2 spany zawierajace napisy
