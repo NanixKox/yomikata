@@ -8,29 +8,9 @@ const videoWatchSelectors= {
 }
 
 class VideoWatch{
-    appendController(){
-        this.WATCH_VIDEO_CONTAINER.appendChild(this.yomikataIcBtn.yic);
-    }
-    #videoControlersActiveAction(){
-        this.yomikataIcBtn.yic.classList.remove("yomikata-hide");
+    sidebarAppearAction(){}
+    sidebarHideAction(){}
 
-        this.yomikataSubtitles.subContainer.classList.add("yomikata-subtitle-container-up");
-        this.yomikataSubtitles.subContainer.classList.remove("yomikata-subtitle-container-hide");
-    }
-    #videoControlersInactiveAction(){
-        this.yomikataIcBtn.yic.classList.add("yomikata-hide");
-
-        if(!this.isReadingExplanation){
-            this.yomikataSubtitles.subContainer.classList.remove("yomikata-subtitle-container-up");
-            this.yomikataSubtitles.subContainer.classList.remove("yomikata-subtitle-container-hide");
-        }
-    }
-    #videoControlersPassiveAction(){
-        this.yomikataIcBtn.yic.classList.add("yomikata-hide");
-
-        this.yomikataSubtitles.subContainer.classList.remove("yomikata-subtitle-container-up");
-        this.yomikataSubtitles.subContainer.classList.add("yomikata-subtitle-container-hide");
-    }
     #setupControllerStateHook(){
         this.elementWaiter = new MutationObserver(()=>{
         const VIDEO_STATER = document.querySelector(this.specificSelectors.videoStater);
@@ -47,11 +27,12 @@ class VideoWatch{
 
                     const classList = mut.target.classList;
                     if(classList.contains(this.specificSelectors.videoActive)){
-                        this.#videoControlersActiveAction();
+                        this.yomikataVideoOverlay.videoControlersActiveAction();
                     }else if(classList.contains(this.specificSelectors.videoInactive)){
-                        this.#videoControlersInactiveAction();
+                        this.yomikataVideoOverlay.videoControlersInactiveAction(
+                            this.isReadingExplanation);
                     }else if(classList.contains(this.specificSelectors.videoPassive)){
-                        this.#videoControlersPassiveAction();
+                        this.yomikyomikataVideoOverlay.videoControlersPassiveAction();
                     }
                 }
             });
@@ -68,11 +49,8 @@ class VideoWatch{
         subtree: true
         });
     }
-    appendSidebar(){
-        this.WATCH_VIDEO_CONTAINER.appendChild(this.yomikataSiBar.ys);
-    }
-    appendSubtitles(){
-        this.WATCH_VIDEO_CONTAINER.appendChild(this.yomikataSubtitles.itself());
+    appendVideoOverlay(){
+        throw new Error("You need to override appendVideoOverlay() in VideoWatch class")
     }
     constructor(yomikataIconButton,yomikataSidebar,yomikataSubtitles,videoWatchContainer,videoElement,specificSelectors){
         this.specificSelectors = specificSelectors;
@@ -80,6 +58,11 @@ class VideoWatch{
         this.elementWaiter = null;
         this.videoElementObservator = null;
 
+        this.yomikataVideoOverlay = new YomikataVideoOverlay(
+            yomikataSidebar,
+            yomikataIconButton,
+            yomikataSubtitles
+        );
         this.yomikataIcBtn = yomikataIconButton;
         this.yomikataSiBar = yomikataSidebar;
         this.yomikataSubtitles = yomikataSubtitles;
@@ -88,13 +71,18 @@ class VideoWatch{
         this.WATCH_VIDEO_CONTAINER = videoWatchContainer;
         this.VIDEO_ELEMENT = videoElement;
 
-        this.appendController();
-        this.appendSidebar();
-        this.appendSubtitles();
+        this.appendVideoOverlay();
 
         this.#setupControllerStateHook();
 
         this.isReadingExplanation = false;
+
+        this.yomikataIcBtn.onClickAppend(()=>{
+            this.yomikataSiBar.toggle();
+        });
+        this.yomikataSiBar.onToggle((isVisible)=>{
+            isVisible ? this.sidebarAppearAction() : this.sidebarHideAction();
+        });
     }
     #isVideoOn(){
         return !this.VIDEO_ELEMENT.paused;
@@ -103,18 +91,21 @@ class VideoWatch{
         try{
             this.WATCH_VIDEO_CONTAINER.removeChild(this.yomikataIcBtn.yic);
             this.WATCH_VIDEO_CONTAINER.removeChild(this.yomikataSiBar.ys);
-            this.WATCH_VIDEO_CONTAINER.removeChild(this.yomikataSubtitles.itself());            
+            this.WATCH_VIDEO_CONTAINER.removeChild(this.yomikataSubtitles.itself());   
+            delete this.yomikataVideoOverlay;         
         }catch{}
 
         try{
             this.videoElementObservator.disconnect();
             this.elementWaiter.disconnect();
         }catch{}
+
+        try{
+            delete this.yomikataSubtitles;
+        }
     }
 }
 class VideoMenager{
-    additionalYomikataIconAction(){
-    }
     async additionalWaitForElements(){}
     constructor(specificSelectors){
         this.specificSelectors = specificSelectors;
@@ -130,14 +121,6 @@ class VideoMenager{
         this.yomikataSubtitles = new YomikataSubsElement();
         this.yomikataSubList = null;
         this.yomikataSubMenger = null;
-
-        this.yomikataIconButton.onClick(()=>{
-            this.yomikataSidebar.toggle();
-            additionalYomikataIconAction();
-        });
-        this.yomikataSidebar.onToggle((isVisible)=>{
-
-        });
 
         this.video = null;
     }
@@ -205,12 +188,7 @@ class VideoMenager{
                 textBlock.classList.add("yomikata-sidebar-item");
                 textBlock.textContent = subObj.content;
 
-                textBlock.addEventListener("click",()=>{
-                    //console.log(subObj.timeStart, typeof subObj.timeStart);
-                    //videoElement.fastSeek(subObj.timeStart);
-                    //videoElement.currentTime = subObj.timeStart;
-                    //videoElement.pause();
-                });
+                textBlock.addEventListener("click",()=>{});
 
                 yomikataSidebar.appendChild(textBlock);
             }

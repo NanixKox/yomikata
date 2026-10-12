@@ -21,4 +21,8 @@ class YomikataSubsElement{
     itself(){
         return this.subContainer;
     }
+
+    destroy(){
+        this.subBox.remove();
+    }
 }

@@ -40,6 +40,7 @@
         "src/styles/sidebar.css",
         "src/styles/subtitles.css",
         "src/styles/explanation.css",
+        "src/styles/videoOverlay.css",
         "src/styles/netflixMock.css"
       ],
       "js": [
@@ -56,6 +57,7 @@
         "src/scripts/html_objects/yomikataSubsElement.js",
         "src/scripts/html_objects/yomikataSubExplenationElement.js",
         "src/scripts/html_objects/yomikataWordElement.js",
+        "src/scripts/html_objects/yomikataVideoOverlay.js",
         "src/scripts/menagers/subtitlesMenager.js",
         "src/scripts/menagers/videoMenager.js",
         "src/scripts/menagers/netflix/netflixMenager.js",
@@ -71,7 +73,7 @@
         "src/styles/sidebar.css",
         "src/styles/subtitles.css",
         "src/styles/explanation.css",
-        "src/styles/crunchyrollMock.css"
+        "src/styles/videoOverlay.css"
       ],
       "js": [
         "src/scripts/config.js",
@@ -87,6 +89,7 @@
         "src/scripts/html_objects/yomikataSubsElement.js",
         "src/scripts/html_objects/yomikataSubExplenationElement.js",
         "src/scripts/html_objects/yomikataWordElement.js",
+        "src/scripts/html_objects/yomikataVideoOverlay.js",
         "src/scripts/menagers/subtitlesMenager.js",
         "src/scripts/menagers/videoMenager.js",
         "src/scripts/menagers/crunchyroll/crunchyrollMenager.js",

@@ -1,54 +1,84 @@
+//kat:flex kat:self-stretch kat:h-44 kat:@lg:h-64       (kontrolki)
+//kat:flex kat:self-stretch kat:h-44 kat:@lg:h-48 kat:gap-10        (pasek przewijania)
 class CrunchyrollWatch extends VideoWatch{
     //appendController(){}
     //appendSidebar(){}
     //appendSubtitles(){}
+    sidebarAppearAction(){
+        console.log("sidebar wychylony");
+
+        if(this.controlsSizeObserver)
+            this.controlsSizeObserver.disconnect();
+
+        this.controlsSizeObserver = new ResizeObserver(()=>{
+            const sidebarRect = 
+                this.yomikataSiBar.itself().getBoundingClientRect();
+
+            this.videoScrollbar.style.width = 
+                String(window.innerWidth - sidebarRect.width - 40)+"px";
+            this.videoPlayerControls.style.width = 
+                String(window.innerWidth - sidebarRect.width - 40)+"px";
+            this.VIDEO_ELEMENT.style.width =
+                String(window.innerWidth - sidebarRect.width)+"px";
+        });
+        this.controlsSizeObserver.observe(this.yomikataSiBar.itself());
+    }
+    sidebarHideAction(){
+        console.log("Sidebar schowany");
+
+        if(this.controlsSizeObserver)
+            this.controlsSizeObserver.disconnect();
+
+        this.videoPlayerControls.style.width = "100%";
+        this.VIDEO_ELEMENT.style.width = "100%";
+        this.videoScrollbar.style.width = "100%";
+    }
+
+    appendVideoOverlay(){
+        this.VIDEO_ELEMENT.parentNode.insertBefore(
+            this.yomikataVideoOverlay.itself(),
+            this.VIDEO_ELEMENT
+        );
+    }
     constructor(yomikataIconButton,
                 yomikataSidebar,
                 yomikataSubtitles,
                 videoWatchContainer,
                 videoElement,
                 specificSelectors){
-        const vidContainer = document.createElement("div");
-        vidContainer.classList.add("yomikata-cr-video-parent");
-        videoElement.parentNode
-            .insertBefore(vidContainer,
-                            videoElement);
 
         super(
             yomikataIconButton,
             yomikataSidebar,
             yomikataSubtitles,
-            vidContainer,
+            videoWatchContainer,
             videoElement,
             specificSelectors
         );
 
-        //const bitMOVIN = document.querySelector(".bitmovinplayer-container\\:aspect-16x9");
+        this.videoScrollbar = document.querySelector(".kat\\:flex.kat\\:self-stretch.kat\\:h-44.kat\\:\\@lg\\:h-64");
+        this.videoPlayerControls = document.querySelector(".kat\\:flex.kat\\:self-stretch.kat\\:h-44.kat\\:\\@lg\\:h-48.kat\\:gap-10");
 
-        const observer = new ResizeObserver(() => {
+        this.sizeObserver = new ResizeObserver(() => {
             const rect = this.VIDEO_ELEMENT.getBoundingClientRect();
             const parentRect = this.VIDEO_ELEMENT.parentElement.getBoundingClientRect();
 
-            console.log("Video changed:");
-
-            console.log("x:", rect.x);
-            console.log("y:", rect.y);
-            console.log("width:", rect.width);
-            console.log("height:", rect.height);
-
-            vidContainer.style.left = `${rect.left - parentRect.left}px`;
-            vidContainer.style.top = `${rect.top - parentRect.top}px`;
-            vidContainer.style.width = `${rect.width}px`;
-            vidContainer.style.height = `${rect.height}px`; 
+            this.yomikataVideoOverlay.changePositionAndSize(
+                rect.left - parentRect.left,
+                rect.top - parentRect.top,
+                rect.width,
+                rect.height
+            );
 
         });
 
-        observer.observe(this.VIDEO_ELEMENT);
+        this.sizeObserver.observe(this.VIDEO_ELEMENT);
+        this.controlsSizeObserver = null;
     }
 }
 class CrunchyrollMenager extends VideoMenager{
     async additionalWaitForElements(){
-        this.videoPlayerWrapper = waitForElement(".video-player-wrapper");
+        this.videoPlayerWrapper = await waitForElement(".video-player-wrapper");
     }
     constructor(){
         const specificSelectors = {
@@ -63,6 +93,7 @@ class CrunchyrollMenager extends VideoMenager{
         super(specificSelectors);
 
         this.videoPlayerWrapper = null;
+        this.videoPlayerControls = null;
     }
     createVideoWatch(){
         this.vWatch = new CrunchyrollWatch(
@@ -88,5 +119,4 @@ class CrunchyrollMenager extends VideoMenager{
         console.log(r);
         return r;
     }
-    
 }

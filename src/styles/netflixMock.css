@@ -2,3 +2,9 @@
     visibility: hidden;
 }
 
+.yomikata-video-overlay {
+  pointer-events: none;
+}
+.yomikata-overlay-squishy-panel{
+  pointer-events: none;
+}

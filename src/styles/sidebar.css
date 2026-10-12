@@ -1,16 +1,21 @@
 .yomikata-sidebar {
-  position: fixed;
+  position: relative;
+  
   top: 0;
   right: 0;
+  bottom: 0;
+
   z-index: 999999;
 
   width: 22vw;
   min-width: 280px;
   max-width: 420px;
-  height: 100vh;
-
+  height: 100%;
+  
+  flex: 0 0 22vw;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
 
   overflow: hidden;
   background: #050807;
@@ -19,7 +24,7 @@
 }
 
 .yomikata-sidebar.yomikata-hidden {
-  transform: translateX(100%);
+  display: none;
 }
 
 .yomikata-sidebar-top,

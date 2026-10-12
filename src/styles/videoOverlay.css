@@ -1,0 +1,19 @@
+.yomikata-video-overlay{
+    position:absolute;
+
+    display: flex;
+
+    z-index: 99 !important;
+    pointer-events: none;
+
+    width:100vw;
+}
+.yomikata-video-overlay > * {
+    pointer-events: auto;
+}
+.yomikata-overlay-squishy-panel{
+    pointer-events: none;
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+}

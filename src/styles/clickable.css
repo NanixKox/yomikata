@@ -1,5 +1,5 @@
 .yomikata-icon-button {
-  position: fixed;
+  position: absolute;
   top: clamp(24px, 2vh, 56px);
   left: 50%;
   transform: translateX(-50%);
@@ -12,6 +12,8 @@
 
   cursor: pointer;
   z-index: 999999;
+
+  pointer-events: auto;
 }
 
 .yomikata-icon-button:hover {

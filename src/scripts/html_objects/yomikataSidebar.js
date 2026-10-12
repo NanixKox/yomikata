@@ -50,6 +50,9 @@ class YomikataSidebar{
 
         this.toggleCallback = null;
     }
+    itself(){
+        return this.ys;
+    }
     onToggle(callback){
         this.toggleCallback = callback;
     }
@@ -57,14 +60,56 @@ class YomikataSidebar{
         this.ys.classList.toggle("yomikata-hidden");
 
         if(typeof this.toggleCallback === "function"){
-            this.toggleCallback(this.ys.classList.contains("yomikata-hidden"));
+            this.toggleCallback(!this.ys.classList.contains("yomikata-hidden"));
         }
     }
     leftShiftButtonOnClick(func){
         this.shiftLeftButton.onclick = func;
+
+        this.bindHoldAction(this.shiftLeftButton,func);
     }
     rightShiftButtonOnClick(func){
-        this.shiftRightButton.onclick = func;
+        //this.shiftRightButton.onclick = func;
+
+        this.bindHoldAction(this.shiftRightButton,func)
+    }
+
+    bindHoldAction(button, func) {
+        let holdTimer = null;
+        let holdStarted = false;
+
+        button.addEventListener("pointerdown", () => {
+            holdStarted = false;
+
+            holdTimer = setTimeout(() => {
+                holdStarted = true;
+                func();
+
+                holdTimer = setInterval(func, 100);
+            }, 300);
+        });
+
+        button.addEventListener("pointerup", () => {
+            clearTimeout(holdTimer);
+            clearInterval(holdTimer);
+            holdTimer = null;
+
+            if (!holdStarted) {
+                func();
+            }
+        });
+
+        button.addEventListener("pointerleave", () => {
+            clearTimeout(holdTimer);
+            clearInterval(holdTimer);
+            holdTimer = null;
+        });
+
+        button.addEventListener("pointercancel", () => {
+            clearTimeout(holdTimer);
+            clearInterval(holdTimer);
+            holdTimer = null;
+        });
     }
     appendChild(child){
         this.contentE.appendChild(child);

@@ -7,10 +7,22 @@ class YomikataIconButton{
         this.yic = document.createElement("div");
         this.yic.classList.add("yomikata-icon-button");
         this.yic.appendChild(this.icon);
-    }
 
-    onClick(callback){
-        this.yic.addEventListener("click",callback);
+        this.listOfFuncs = [];
+        this.yic.addEventListener("click", () => this.#playListOfFuncs());
+    }
+    itself(){
+        return this.yic;
+    }
+    #playListOfFuncs(){
+        for(const f of this.listOfFuncs){
+            if(typeof f === "function"){
+                f();
+            }
+        }
+    }
+    onClickAppend(callback){
+        this.listOfFuncs.push(callback);
     }
 
     isVisible(){
